@@ -1,4 +1,4 @@
-import ProductCard from "@/components/ProductsCard";
+import ProductCard from "@/(components)/ProductsCard";
 import { fetchWooCommerceProducts } from "@/utils/woocomerce-api";
 
 export const getStaticProps = async () => {
