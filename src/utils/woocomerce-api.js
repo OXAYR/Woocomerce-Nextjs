@@ -26,7 +26,7 @@ export async function createWooCommerceOrder({ order }) {
     }
 }
 
-export async function createWooCommerceOrder() {
+export async function fetchWooCommerceOrder() {
     try {
         const response = await api.get("orders");
         return response;
