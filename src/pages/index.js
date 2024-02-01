@@ -15,7 +15,6 @@ export const getStaticProps = async () => {
         props: {
             products: wooCommerceProducts.data,
         },
-        // revalidate: 60 // regenerate page with new data fetch after 60 seconds
     };
 };
 
@@ -23,7 +22,7 @@ export default function Home({ products }) {
     console.log("Products------------>", products);
     return (
         <>
-            <div>products</div>
+            <div className=" bg-slate-600">products</div>
         </>
     )
 }
