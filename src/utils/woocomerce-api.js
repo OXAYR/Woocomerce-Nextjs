@@ -1,5 +1,5 @@
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
-// initialise the WooCommerceRestApi //
+
 const api = new WooCommerceRestApi({
     url: "http://localhost/next-wp",
     consumerKey: process.env.WOOCOMMERCE_KEY,
@@ -11,6 +11,15 @@ const api = new WooCommerceRestApi({
 export async function fetchWooCommerceProducts() {
     try {
         const response = await api.get("products");
+        return response;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export async function createWooCommerceOrder({ order }) {
+    try {
+        const response = await api.post("orders", order);
         return response;
     } catch (error) {
         throw new Error(error);
