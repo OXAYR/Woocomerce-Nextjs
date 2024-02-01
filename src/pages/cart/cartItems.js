@@ -8,8 +8,7 @@ import {
 } from "../../(store)/cartSlice/cartSlice"
 
 
-// TODO refactor to separate file
-const calculatePrice = (number, price) => {
+const calculatePrice = (quantity, price) => {
     const formattedPrice = parseFloat(price) * 100;
     const result = (formattedPrice * quantity) / 100;
     return result.toFixed(2);
@@ -18,7 +17,6 @@ const calculatePrice = (number, price) => {
 const CartItem = (props) => {
     const dispatch = useDispatch();
 
-    // copy lineItem object and set the quantity to 1 so only incrementing/decrementing by 1
     const data = { ...props.lineItem };
     data.quantity = 1;
 
@@ -35,7 +33,7 @@ const CartItem = (props) => {
     };
 
     return (
-        <Wrapper>
+        <div>
             <div onClick={remove}>X</div>
             <div>{props.lineItem.name}</div>
             <CartQty
@@ -46,8 +44,7 @@ const CartItem = (props) => {
             <div>
                 £{calculatePrice(props.lineItem.quantity, props.lineItem.price)}
             </div>
-        </Wrapper>
+        </div>
     );
 };
-
 export default CartItem;

@@ -1,6 +1,5 @@
 import ProductCard from "@/(components)/ProductsCard";
 import { fetchWooCommerceProducts } from "@/utils/woocomerce-api";
-
 export const getStaticProps = async () => {
     const wooCommerceProducts = await fetchWooCommerceProducts().catch((error) =>
         console.error(error)

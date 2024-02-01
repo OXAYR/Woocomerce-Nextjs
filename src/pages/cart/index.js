@@ -1,10 +1,16 @@
-import CartItem from "./cartItems";
+import CartItem from "./CartItems.js";
 
-export default function Home() {
+const CartPage = () => {
+
 
     return (
         <>
-            <CartItem />
+            <h1>Welcome to the cart</h1>
+
+            {/* <CartItem /> */}
+
         </>
-    )
-}
+    );
+};
+
+export default CartPage;
