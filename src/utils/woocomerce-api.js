@@ -25,3 +25,12 @@ export async function createWooCommerceOrder({ order }) {
         throw new Error(error);
     }
 }
+
+export async function createWooCommerceOrder() {
+    try {
+        const response = await api.get("orders");
+        return response;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
