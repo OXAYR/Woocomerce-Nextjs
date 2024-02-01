@@ -13,8 +13,20 @@ const ProductCard = ({ product }) => {
                 <span>{product.name}</span>
                 <span>--</span>
                 <span>
-                    <strong>£{product.regular_price}</strong>
+                    {product.sale_price ? (
+                        <>
+                            <strong className="text-red-600 text-decoration-line-through">
+                                Rs {product.regular_price}
+                            </strong>
+                            <strong>Rs{product.sale_price}</strong>
+                        </>
+                    ) : (
+                        <strong>
+                            Rs {product.regular_price}
+                        </strong>
+                    )}
                 </span>
+
             </div>
         </div>
     );
