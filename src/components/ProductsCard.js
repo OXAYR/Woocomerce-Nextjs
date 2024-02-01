@@ -1,4 +1,5 @@
 const ProductCard = ({ product }) => {
+    console.log("product in the product card------>", product)
     return (
         <div className="w-full">
             <div className="relative w-full aspect-w-1 aspect-h-1">
