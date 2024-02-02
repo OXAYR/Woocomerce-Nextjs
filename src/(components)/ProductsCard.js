@@ -1,12 +1,15 @@
 // ProductCard.js
 import { useDispatch } from "react-redux";
 import { addLineItem } from "../(store)/cartSlice/cartSlice";
+import { useRouter } from 'next/navigation'
 
 const ProductCard = ({ product }) => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const handleAddToCart = () => {
         // Dispatch the addLineItem action with the product as payload
         dispatch(addLineItem(product));
+        router.push('/cart');
     };
 
     return (

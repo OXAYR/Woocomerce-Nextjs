@@ -1,6 +1,6 @@
 
 import { useDispatch } from "react-redux";
-import { CartQty } from "../../(components)/cartQty";
+import CartQty from "../../(components)/cartQty";
 import {
     decrementLineItemQuantity,
     addLineItem,
@@ -9,6 +9,7 @@ import {
 
 
 const calculatePrice = (quantity, price) => {
+    console.log(price)
     const formattedPrice = parseFloat(price) * 100;
     const result = (formattedPrice * quantity) / 100;
     return result.toFixed(2);
