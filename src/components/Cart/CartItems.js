@@ -1,6 +1,6 @@
 
 import { useDispatch } from "react-redux";
-import CartQty from "../../components/Cart/cartQty";
+import CartQty from "./cartQty";
 import {
     decrementLineItemQuantity,
     addLineItem,
