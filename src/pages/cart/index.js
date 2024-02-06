@@ -21,7 +21,7 @@ const Cart = () => {
                 <div>
                     {cart.map((item) => (
 
-                        <CartItems key={item.product_id} lineItem={item} />
+                        <CartItems key={item.id} lineItem={item} />
                     ))}
                     <p>Total Price: £{calculateTotalPrice(cart)}</p>
                     <button onClick={resetCart}>Reset Cart</button>
