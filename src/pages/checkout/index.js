@@ -3,9 +3,11 @@ import CartItems from '@/components/Cart/CartItems';
 import AddressForm from '@/components/Checkout/AddressForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 const CheckoutPage = () => {
     const [paymentMethod, setPaymentMethod] = useState('cash');
+    const router = useRouter();
 
     const cart = useSelector((state) => state.cart.lineItems);
     const [billing, setBilling] = useState({
@@ -60,17 +62,18 @@ const CheckoutPage = () => {
             }
 
 
-            const responseGet = await fetch('/api/orders/woocommerce', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const updatedOrders = responseGet;
+            // const responseGet = await fetch('/api/orders/woocommerce', {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            // });
+            // const updatedOrders = responseGet;
             console.log("Updated orders:", updatedOrders);
         } catch (error) {
             console.error("Error placing order:", error);
         }
+        router.push("/checkout/orderplaced")
         console.log('Orders:', orderData);
     };
 
