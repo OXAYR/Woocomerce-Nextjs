@@ -7,9 +7,6 @@ import { useSelector } from 'react-redux';
 const CheckoutPage = () => {
     const [paymentMethod, setPaymentMethod] = useState('cash');
 
-    const handlePaymentChange = (e) => {
-        setPaymentMethod(e.target.value);
-    };
     const cart = useSelector((state) => state.cart.lineItems);
     const [billing, setBilling] = useState({
         first_name: '',
@@ -38,6 +35,9 @@ const CheckoutPage = () => {
         phone: '',
     });
 
+    const handlePaymentChange = (e) => {
+        setPaymentMethod(e.target.value);
+    };
     const handleBillingChange = (e) => {
         const { name, value } = e.target;
         setBilling((prevBilling) => ({ ...prevBilling, [name]: value }));
