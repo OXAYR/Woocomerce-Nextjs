@@ -1,6 +1,6 @@
 
 import { useDispatch } from "react-redux";
-import CartQty from "../../(components)/cartQty";
+import CartQty from "../../components/cartQty";
 import {
     decrementLineItemQuantity,
     addLineItem,
@@ -62,10 +62,10 @@ const CartItem = (props) => {
 
             if (response.ok) {
                 console.log("Order placed successfully:", response);
-                
+
             }
 
-            
+
             const responseGet = await fetch('/api/orders/woocommerce', {
                 method: 'GET',
                 headers: {

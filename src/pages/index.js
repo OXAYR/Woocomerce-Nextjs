@@ -1,4 +1,4 @@
-import ProductCard from "@/(components)/ProductsCard";
+import ProductCard from "@/components/ProductsCard";
 import { fetchWooCommerceProducts } from "@/pages/api/products/products-api";
 
 export const getStaticProps = async () => {
@@ -24,7 +24,7 @@ export default function Home({ products }) {
     console.log("Products------------>", products);
     return (
         <>
-            <div className="grid grid-cols-2 gap-4">
+            <div className=" mx-10 grid grid-cols-4 gap-4">
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
