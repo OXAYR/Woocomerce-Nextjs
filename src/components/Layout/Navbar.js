@@ -10,7 +10,7 @@ const Navbar = () => {
                 </Link>
                 <ul className="flex space-x-4">
                     <li>
-                        <Link href="/contact" className="text-white font-medium hover:text-black  hover:bg-white py-2 px-4 rounded transition duration-300 ease-in-out">
+                        <Link href="/cart" className="text-white font-medium hover:text-black  hover:bg-white py-2 px-4 rounded transition duration-300 ease-in-out">
                             Cart
                         </Link>
                     </li>
