@@ -35,6 +35,19 @@ const CheckoutPage = () => {
         phone: '',
     });
 
+    console.log("cart-------->", cart[0].id)
+
+    const handleCheckout = () => {
+        const orders = {
+            billing,
+            shipping,
+            payment_method: paymentMethod,
+            payment_method: paymentMethod,
+            set_paid: false,
+            line_items: cart
+        };
+        console.log('Orders:', orders);
+    };
     const handlePaymentChange = (e) => {
         setPaymentMethod(e.target.value);
     };
@@ -56,7 +69,7 @@ const CheckoutPage = () => {
                         <CartItems key={item.id} lineItem={item} />
                     ))}
                     <p className="text-gray-600 mb-2">
-                        Total Price: £{calculateTotalPrice(cart)}
+                        Total Price: Rs{calculateTotalPrice(cart)}
                     </p>
                 </div>
                 <div className='my-5 flex'>
@@ -103,7 +116,7 @@ const CheckoutPage = () => {
                     </label>
                 </div>
                 <button
-                    onClick={() => console.log({ billing, shipping, paymentMethod })}
+                    onClick={(handleCheckout)}
                     className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Submit Order

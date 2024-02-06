@@ -19,13 +19,13 @@ const Cart = () => {
     return (
         <div className="bg-white p-4 rounded-lg shadow-md m-10">
             <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
-            {cart ? (
+            {cart.length > 0 ? (
                 <div>
                     {cart.map((item) => (
                         <CartItems key={item.id} lineItem={item} />
                     ))}
                     <p className="text-gray-600 mb-2">
-                        Total Price: £{calculateTotalPrice(cart)}
+                        Total Price: Rs{calculateTotalPrice(cart)}
                     </p>
                     <button
                         onClick={handleClick}
