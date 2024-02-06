@@ -5,6 +5,11 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const CheckoutPage = () => {
+    const [paymentMethod, setPaymentMethod] = useState('cash');
+
+    const handlePaymentChange = (e) => {
+        setPaymentMethod(e.target.value);
+    };
     const cart = useSelector((state) => state.cart.lineItems);
     const [billing, setBilling] = useState({
         first_name: '',
@@ -54,18 +59,51 @@ const CheckoutPage = () => {
                         Total Price: £{calculateTotalPrice(cart)}
                     </p>
                 </div>
-                <AddressForm
-                    title="Billing Address"
-                    address={billing}
-                    onChange={handleBillingChange}
-                />
-                <AddressForm
-                    title="Shipping Address"
-                    address={shipping}
-                    onChange={handleShippingChange}
-                />
+                <div className='my-5 flex'>
+                    <div>
+                        <AddressForm
+                            title="Billing Address"
+                            address={billing}
+                            onChange={handleBillingChange}
+                        />
+                    </div>
+                    <div className='divide-y-2 divide-slate-500 border-dotted'>
+
+                    </div>
+
+                    <div className='pl-5'>
+                        <AddressForm
+                            title="Shipping Address"
+                            address={shipping}
+                            onChange={handleShippingChange}
+                        />
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <h2 className="text-lg font-semibold">Payment Method</h2>
+                    <label className='mr-4'>
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="cash"
+                            checked={paymentMethod === 'cash'}
+                            onChange={handlePaymentChange}
+                        />
+                        Cash
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="ppal"
+                            checked={paymentMethod === 'ppal'}
+                            onChange={handlePaymentChange}
+                        />
+                        PaypaL
+                    </label>
+                </div>
                 <button
-                    onClick={() => console.log({ billing, shipping })}
+                    onClick={() => console.log({ billing, shipping, paymentMethod })}
                     className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Submit Order
