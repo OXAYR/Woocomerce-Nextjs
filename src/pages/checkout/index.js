@@ -1,4 +1,4 @@
-// pages/checkout.js
+
 
 import AddressForm from '@/components/Checkout/AddressForm';
 import { useState } from 'react';
@@ -56,7 +56,7 @@ const CheckoutPage = () => {
                 />
                 <button
                     onClick={() => console.log({ billing, shipping })}
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                    className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Submit Order
                 </button>
