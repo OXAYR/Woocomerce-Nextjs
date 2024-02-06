@@ -5,7 +5,7 @@ const Navbar = () => {
             <div className="container mx-auto flex items-center justify-between">
                 <Link href="/" className="text-white font-semibold text-lg">
 
-                    My Awesome Store
+                    E-COMM
 
                 </Link>
                 <ul className="flex space-x-4">

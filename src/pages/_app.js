@@ -7,8 +7,11 @@ import Navbar from '@/components/Layout/Navbar';
 function MyApp({ Component, pageProps }) {
     return (
         <Provider store={store}>
-            <Navbar />
-            <Component {...pageProps} />
+            <div className='bg-gray-50'>
+                <Navbar />
+
+                <Component {...pageProps} />
+            </div>
         </Provider>
     );
 }

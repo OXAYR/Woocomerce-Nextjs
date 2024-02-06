@@ -15,19 +15,25 @@ const Cart = () => {
     };
 
     return (
-        <div>
-            <h1>Shopping Cart</h1>
+        <div className="bg-white p-4 rounded-lg shadow-md m-10">
+            <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
             {cart ? (
                 <div>
                     {cart.map((item) => (
-
                         <CartItems key={item.id} lineItem={item} />
                     ))}
-                    <p>Total Price: £{calculateTotalPrice(cart)}</p>
-                    <button onClick={resetCart}>Reset Cart</button>
+                    <p className="text-gray-600 mb-2">
+                        Total Price: £{calculateTotalPrice(cart)}
+                    </p>
+                    <button
+                        onClick={resetCart}
+                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                    >
+                        Reset Cart
+                    </button>
                 </div>
             ) : (
-                <p>Your cart is empty</p>
+                <p className="text-gray-600">Your cart is empty</p>
             )}
         </div>
     );
