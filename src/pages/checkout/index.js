@@ -4,10 +4,12 @@ import AddressForm from '@/components/Checkout/AddressForm';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/loader';
 
 const CheckoutPage = () => {
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const cart = useSelector((state) => state.cart.lineItems);
     const [billing, setBilling] = useState({
@@ -47,6 +49,7 @@ const CheckoutPage = () => {
                 quantity: item.quantity
             }))
         };
+        setLoading(true);
         try {
             const response = await fetch('/api/orders/woocommerce', {
                 method: 'POST',
@@ -60,6 +63,7 @@ const CheckoutPage = () => {
                 console.log("Order placed successfully:", response);
 
             }
+            setLoading(false);
 
 
             // const responseGet = await fetch('/api/orders/woocommerce', {
@@ -72,6 +76,7 @@ const CheckoutPage = () => {
             console.log("Updated orders:", updatedOrders);
         } catch (error) {
             console.error("Error placing order:", error);
+            setLoading(false);
         }
         router.push("/checkout/orderplaced")
         console.log('Orders:', orderData);
@@ -145,6 +150,7 @@ const CheckoutPage = () => {
                         PaypaL
                     </label>
                 </div>
+                {loading && <Loader />}
                 <button
                     onClick={(handleCheckout)}
                     className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
