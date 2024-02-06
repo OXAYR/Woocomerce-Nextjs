@@ -34,20 +34,47 @@ const CheckoutPage = () => {
         country: '',
         phone: '',
     });
-
-    console.log("cart-------->", cart[0].id)
-
-    const handleCheckout = () => {
-        const orders = {
-            billing,
-            shipping,
-            payment_method: paymentMethod,
+    const handleCheckout = async () => {
+        const orderData = {
+            billing: billing,
+            shipping: shipping,
             payment_method: paymentMethod,
             set_paid: false,
-            line_items: cart
+            line_items: cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity
+            }))
         };
-        console.log('Orders:', orders);
+        try {
+            const response = await fetch('/api/orders/woocommerce', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ order: orderData }),
+            });
+
+            if (response.ok) {
+                console.log("Order placed successfully:", response);
+
+            }
+
+
+            const responseGet = await fetch('/api/orders/woocommerce', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const updatedOrders = responseGet;
+            console.log("Updated orders:", updatedOrders);
+        } catch (error) {
+            console.error("Error placing order:", error);
+        }
+        console.log('Orders:', orderData);
     };
+
+
     const handlePaymentChange = (e) => {
         setPaymentMethod(e.target.value);
     };
