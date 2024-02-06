@@ -1,5 +1,3 @@
-// pages/api/woocommerce.js
-
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 
 const api = new WooCommerceRestApi({
@@ -11,27 +9,24 @@ const api = new WooCommerceRestApi({
 
 export default async function handler(req, res) {
     try {
-
         const { order: orderData } = req.body;
         console.log("request method", req.method);
 
-        if (!orderData) {
-            return res.status(400).json({ error: 'Order data is missing' });
-        }
-
         if (req.method === 'POST') {
-
+            if (!orderData) {
+                return res.status(400).json({ error: 'Order data is missing' });
+            }
 
             console.log("Sending request to WooCommerce API...");
 
             const response = await api.post("orders", orderData);
 
-
-            res.status(200).json({ message: 'Order created successfully', data: response });
+            return res.status(200).json({ message: 'Order created successfully', data: response });
         } else if (req.method === "GET") {
             try {
                 const response = await api.get("orders");
-                return response;
+                console.log("Response------>Get ", response.data);
+                return res.status(200).json(response.data);
             } catch (error) {
                 throw new Error(error);
             }
