@@ -1,6 +1,6 @@
 // ProductCard.js
 import { useDispatch } from "react-redux";
-import { addLineItem } from "../(store)/cartSlice/cartSlice";
+import { addLineItem } from "../../(store)/cartSlice/cartSlice";
 import { useRouter } from 'next/navigation'
 
 const ProductCard = ({ product }) => {
@@ -8,7 +8,6 @@ const ProductCard = ({ product }) => {
     const router = useRouter();
 
     const handleAddToCart = () => {
-        // Dispatch the addLineItem action with the product as payload
         dispatch(addLineItem(product));
         router.push('/cart');
     };
@@ -38,7 +37,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 <button
                     onClick={handleAddToCart}
-                    className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                    className="mt-4 border-black hover:bg-black hover:text-white text-black py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Add to Cart
                 </button>

@@ -1,6 +1,6 @@
 
 import { useDispatch } from "react-redux";
-import CartQty from "../../components/cartQty";
+import CartQty from "../../components/Cart/cartQty";
 import {
     decrementLineItemQuantity,
     addLineItem,
@@ -32,10 +32,6 @@ const CartItem = (props) => {
     const remove = () => {
         dispatch(removeLineItem(data));
     };
-
-
-
-    // CartItems.js
 
     const placeOrder = async () => {
         try {
@@ -83,19 +79,33 @@ const CartItem = (props) => {
 
 
     return (
-        <div>
-            <div onClick={remove}>X</div>
-            <div>{props.lineItem.name}</div>
-            <CartQty
-                quantity={props.lineItem.quantity}
-                decrementFunction={decrement}
-                incrementFunction={increment}
-            />
-            <div>
-                £{calculatePrice(props.lineItem.quantity, props.lineItem.price)}
+        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+            <div className="flex items-center justify-between">
+                <div className="text-gray-700 font-semibold">
+                    {data.name}
+                </div>
+                <div className="text-gray-500 font-black cursor-pointer mr-8 mt-6" onClick={remove}>
+                    X
+                </div>
             </div>
-            <div> <button onClick={placeOrder}>Place Order</button></div>
+            <div className="flex items-center mt-2">
+                <CartQty
+                    quantity={data.quantity}
+                    decrementFunction={decrement}
+                    incrementFunction={increment}
+                />
+                <div className="ml-4">
+                    Rs {calculatePrice(data.quantity, data.price)}
+                </div>
+            </div>
+            <button
+                onClick={placeOrder}
+                className="mt-4 border-black hover:bg-black hover:text-white text-black py-2 px-4 rounded-md transition duration-300 ease-in-out"
+            >
+                Place Order
+            </button>
         </div>
     );
+
 };
 export default CartItem;
