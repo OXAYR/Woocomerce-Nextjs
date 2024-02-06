@@ -79,7 +79,7 @@ const CartItem = (props) => {
 
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div className="rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between">
                 <div className="text-gray-700 font-semibold">
                     {data.name}
@@ -97,6 +97,9 @@ const CartItem = (props) => {
                 <div className="ml-4">
                     Rs {calculatePrice(data.quantity, data.price)}
                 </div>
+            </div>
+            <div className=" divide-x-8 divide-black ">
+
             </div>
             <button
                 onClick={placeOrder}

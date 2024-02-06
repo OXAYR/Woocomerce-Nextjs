@@ -3,14 +3,17 @@ import { useSelector } from 'react-redux';
 import CartItems from '../../components/Cart/CartItems';
 import { resetCartState } from '../../(store)/cartSlice/cartSlice';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation'
 
 const Cart = () => {
     const cart = useSelector((state) => state.cart.lineItems);
     console.log("cart-------->", cart);
-    const dispatch = useDispatch();
+    const router = useRouter();
+    // const dispatch = useDispatch();
 
-    const resetCart = () => {
-        dispatch(resetCartState());
+    const handleClick = () => {
+        router.push('/checkout');
+        // dispatch(resetCartState());
     };
 
     return (
@@ -25,10 +28,10 @@ const Cart = () => {
                         Total Price: £{calculateTotalPrice(cart)}
                     </p>
                     <button
-                        onClick={resetCart}
-                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                        onClick={handleClick}
+                        className="bg-black hover:bg-gray-900 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                     >
-                        Reset Cart
+                        Proceed To Checkout
                     </button>
                 </div>
             ) : (

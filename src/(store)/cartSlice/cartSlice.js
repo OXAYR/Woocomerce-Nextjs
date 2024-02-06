@@ -4,18 +4,21 @@ const initialState = {
     lineItems: [],
 };
 
-const addLineItemReducer = (
-    state,
-    action
-) => {
+const addLineItemReducer = (state, action) => {
     console.log("from add line---->", action.payload)
     const index = state.lineItems.findIndex(
-        (lineItem) => lineItem.product_id === action.payload.product_id
+        (lineItem) => lineItem.id === action.payload.id
     );
+    console.log("index--------->", index);
     if (index === -1) {
+        
+        action.payload.quantity = 1;
         state.lineItems = [...state.lineItems, action.payload];
     } else {
-        state.lineItems[index].quantity += action.payload.quantity;
+        console.log("Before--------->", state.lineItems[index].quantity)
+        
+        state.lineItems[index].quantity++;
+        console.log("After------->", state.lineItems[index].quantity)
     }
     console.log("After add------------->", state.lineItems)
 };
@@ -26,7 +29,7 @@ const decrementQuantityReducer = (
     action
 ) => {
     const index = state.lineItems.findIndex(
-        (lineItem) => lineItem.product_id === action.payload.product_id
+        (lineItem) => lineItem.id === action.payload.id
     );
     if (index >= 0 && state.lineItems[index].quantity > 1) {
 
@@ -42,7 +45,7 @@ const removeLineItemReducer = (
     action
 ) => {
     const index = state.lineItems.findIndex(
-        (lineItem) => lineItem.product_id === action.payload.product_id
+        (lineItem) => lineItem.id === action.payload.id
     );
     if (index >= 0) {
         state.lineItems.splice(index, 1);
