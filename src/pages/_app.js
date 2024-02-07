@@ -9,7 +9,6 @@ function MyApp({ Component, pageProps }) {
         <Provider store={store}>
             <div className='bg-gray-50'>
                 <Navbar />
-
                 <Component {...pageProps} />
             </div>
         </Provider>
