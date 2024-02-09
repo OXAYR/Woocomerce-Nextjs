@@ -1,7 +1,7 @@
 import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api";
 
 const api = new WooCommerceRestApi({
-    url: "http://localhost/next-wp",
+    url: process.env.NEXT_PUBLIC_BASE_URL,
     consumerKey: process.env.WOOCOMMERCE_KEY,
     consumerSecret: process.env.WOOCOMMERCE_SECRET,
     version: "wc/v3",
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     try {
         const { order: orderData } = req.body;
         console.log("request method", req.method);
-
+        let responseData = {};
         if (req.method === 'POST') {
             if (!orderData) {
                 return res.status(400).json({ error: 'Order data is missing' });
@@ -19,17 +19,15 @@ export default async function handler(req, res) {
 
             console.log("Sending request to WooCommerce API...");
 
-            const response = await api.post("orders", orderData);
+            const { data } = await api.post("orders", orderData);
 
             return res.status(200).json({ message: 'Order created successfully', data: response });
         } else if (req.method === "GET") {
-            try {
-                const response = await api.get("orders");
-                console.log("Response------>Get ", response.data);
-                return res.status(200).json(response.data);
-            } catch (error) {
-                throw new Error(error);
-            }
+
+            const response = await api.get("orders");
+            console.log("Response------>Get ", response.data);
+            return res.status(200).json(response.data);
+
         }
     } catch (error) {
         console.error('Error creating WooCommerce order:', error);

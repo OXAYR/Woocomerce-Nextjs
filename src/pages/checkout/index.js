@@ -5,8 +5,15 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/loader';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CardPayment from '@/components/Checkout/cardPayment';
 
 const CheckoutPage = () => {
+
+    const stripePromise = loadStripe(
+        `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
+    );
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -39,18 +46,26 @@ const CheckoutPage = () => {
         phone: '',
     });
     const handleCheckout = async () => {
-        const orderData = {
-            billing: billing,
-            shipping: shipping,
-            payment_method: paymentMethod,
-            set_paid: false,
-            line_items: cart.map(item => ({
-                product_id: item.id,
-                quantity: item.quantity
-            }))
-        };
         setLoading(true);
+        console.log("payment method------->", paymentMethod)
         try {
+            const orderData = {
+                billing: billing,
+                shipping: shipping,
+                payment_method: paymentMethod,
+                set_paid: false,
+                line_items: cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity
+                }))
+            };
+
+
+            if (paymentMethod === 'stripe') {
+                await handleStripeCheckout();
+                return;
+            }
+            // Always send the order data for posting
             const response = await fetch('/api/orders/woocommerce', {
                 method: 'POST',
                 headers: {
@@ -58,28 +73,17 @@ const CheckoutPage = () => {
                 },
                 body: JSON.stringify({ order: orderData }),
             });
-
             if (response.ok) {
                 console.log("Order placed successfully:", response);
 
+            } else {
+                console.error("Failed to place order:", response.statusText);
             }
-            setLoading(false);
-
-
-            // const responseGet = await fetch('/api/orders/woocommerce', {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            // });
-            // const updatedOrders = responseGet;
-            console.log("Updated orders:", updatedOrders);
         } catch (error) {
-            console.error("Error placing order:", error);
-            setLoading(false);
+            console.error("Error during checkout:", error);
         }
-        router.push("/checkout/orderplaced")
-        console.log('Orders:', orderData);
+        setLoading(false);
+        // router.push("/checkout/orderplaced");
     };
 
 
@@ -95,6 +99,33 @@ const CheckoutPage = () => {
         const { name, value } = e.target;
         setShipping((prevShipping) => ({ ...prevShipping, [name]: value }));
     };
+
+
+
+    const handleStripeCheckout = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/orders/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ cart }),
+            });
+
+            if (response.ok) {
+                const { sessionId } = await response.json();
+                const stripe = await stripePromise;
+                await stripe.redirectToCheckout({ sessionId });
+            } else {
+                console.error('Failed to create checkout session');
+            }
+        } catch (error) {
+            console.error('Error during Stripe checkout:', error);
+        }
+        setLoading(false);
+    };
+
 
     return (
         <div className="bg-gray-100 min-h-screen p-8">
@@ -143,12 +174,17 @@ const CheckoutPage = () => {
                         <input
                             type="radio"
                             name="paymentMethod"
-                            value="ppal"
-                            checked={paymentMethod === 'ppal'}
+                            value="stripe"
+                            checked={paymentMethod === 'stripe'}
                             onChange={handlePaymentChange}
                         />
-                        PaypaL
+                        Card Payment
                     </label>
+                    {paymentMethod === 'stripe' && (
+                        <Elements stripe={stripePromise}>
+                            <CardPayment />
+                        </Elements>
+                    )}
                 </div>
                 {loading && <Loader />}
                 <button
