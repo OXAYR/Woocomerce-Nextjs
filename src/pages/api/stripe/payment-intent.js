@@ -1,42 +1,26 @@
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+export default async function handler(req, res) {
+    if (req.method === 'POST') {
+        const { paymentMethodId, amount, currency } = req.body;
+        console.log("payment params------>", paymentMethodId, amount, currency)
+        try {
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount,
+                currency,
+                payment_method: paymentMethodId,
+                payment_method_types: ['card'],
+                confirm: true,
+            });
 
-
-const getProductTotal = async (lineItem) => {
-    let product = await retrieveProductById(
-        lineItem.product_id.toString()
-    );
-    let productTotal = lineItem.quantity * (parseFloat(product.price) * 100);
-    return productTotal;
-};
-
-const calculateTotalAmount = async (lineItems) => {
-    const total = await Promise.all(
-        lineItems.map((lineItem) => {
-            return getProductTotal(lineItem);
-        })
-    ).then((res) => {
-        return res.reduce((curr, next) => curr + next);
-    });
-    return total;
-};
-
-export default async function handler(
-    req,
-    res
-) {
-    const data = req.body;
-
-    try {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: await calculateTotalAmount(data),
-            currency: "gbp",
-        });
-        res.json({
-            paymentIntentId: paymentIntent.id,
-            clientSecret: paymentIntent.client_secret,
-        });
-    } catch (error) {
-        throw new Error(error);
+            res.status(200).json(paymentIntent);
+        } catch (error) {
+            console.error('Error creating Payment Intent:', error);
+            res.status(500).json({ error: 'Failed to create Payment Intent' });
+        }
+    } else {
+        res.setHeader('Allow', ['POST']);
+        res.status(405).end('Method Not Allowed');
     }
 }

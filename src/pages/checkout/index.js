@@ -12,8 +12,9 @@ import CardPayment from '@/components/Checkout/cardPayment';
 const CheckoutPage = () => {
 
     const stripePromise = loadStripe(
-        `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
+        `${"pk_test_51Oh79uLHaE9JSchrZN6M3Im6tS7jPvj7tV463VSvOiSUuN3ZajNrn6hqB7a0UdWjJOLhCd2DnYWkAPBibUdznV9r00c1IhiJcx"}`
     );
+    console.log("strip promise--------->", stripePromise)
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -60,11 +61,6 @@ const CheckoutPage = () => {
                 }))
             };
 
-
-            if (paymentMethod === 'stripe') {
-                await handleStripeCheckout();
-                return;
-            }
             // Always send the order data for posting
             const response = await fetch('/api/orders/woocommerce', {
                 method: 'POST',
@@ -86,6 +82,39 @@ const CheckoutPage = () => {
         // router.push("/checkout/orderplaced");
     };
 
+    const handleStripeCheckout = async (result) => {
+        setLoading(true);
+        console.log("this is the result from handle stripe checkout------>", result.paymentMethod.id)
+        try {
+            const response = await fetch('/api/stripe/payment-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: calculateTotalPrice(cart) * 100,
+                    currency: 'usd',
+                    paymentMethodId: result.paymentMethod.id
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Payment Intent:', data.paymentIntent);
+
+            } else {
+                console.error('Failed to create Payment Intent:', response.statusText);
+
+            }
+        } catch (error) {
+            console.error('Error creating Payment Intent:', error);
+
+        }
+
+        setLoading(false);
+    };
+
+
 
     const handlePaymentChange = (e) => {
         setPaymentMethod(e.target.value);
@@ -102,29 +131,7 @@ const CheckoutPage = () => {
 
 
 
-    const handleStripeCheckout = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('/api/orders/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ cart }),
-            });
 
-            if (response.ok) {
-                const { sessionId } = await response.json();
-                const stripe = await stripePromise;
-                await stripe.redirectToCheckout({ sessionId });
-            } else {
-                console.error('Failed to create checkout session');
-            }
-        } catch (error) {
-            console.error('Error during Stripe checkout:', error);
-        }
-        setLoading(false);
-    };
 
 
     return (
@@ -182,13 +189,13 @@ const CheckoutPage = () => {
                     </label>
                     {paymentMethod === 'stripe' && (
                         <Elements stripe={stripePromise}>
-                            <CardPayment />
+                            <CardPayment handleCheckout={handleStripeCheckout} />
                         </Elements>
                     )}
                 </div>
                 {loading && <Loader />}
                 <button
-                    onClick={(handleCheckout)}
+                    onClick={(handleStripeCheckout)}
                     className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Submit Order
