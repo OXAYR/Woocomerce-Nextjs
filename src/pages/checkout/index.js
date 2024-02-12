@@ -81,10 +81,10 @@ const CheckoutPage = () => {
             router.push("/checkout/orderplaced");
             if (response.ok) {
                 console.log("Order placed successfully:", response);
-                // Redirect or show success message
+        
             } else {
                 console.error("Failed to place order:", response.statusText);
-                // Handle order placement failure
+        
             }
         } catch (error) {
             console.error("Error during order placement:", error);
@@ -113,7 +113,7 @@ const CheckoutPage = () => {
 
                 if (data.status === 'succeeded') {
                     await placeOrder();
-                    router.push("/checkout/orderplaced")// Place order only if payment is successful
+                    router.push("/checkout/orderplaced")
                 } else {
                     console.error('Payment Intent not successful:', data.paymentIntent);
                 }

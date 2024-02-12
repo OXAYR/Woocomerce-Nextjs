@@ -18,7 +18,6 @@ const CardPayment = ({ handleCheckout }) => {
         if (result.error) {
             console.error(result.error);
         } else {
-            // Payment successful, proceed with checkout
             handleCheckout(result);
         }
     };
