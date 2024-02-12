@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 export function middleware(request) {
+    console.log("request from the middleware----------------->", request)
     const currentUser = request.cookies.get('currentUser')?.value
 
     if (currentUser) {
