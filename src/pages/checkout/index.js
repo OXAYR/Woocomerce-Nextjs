@@ -1,4 +1,3 @@
-
 import CartItems from '@/components/Cart/CartItems';
 import AddressForm from '@/components/Checkout/AddressForm';
 import { useState } from 'react';
@@ -10,16 +9,14 @@ import { loadStripe } from "@stripe/stripe-js";
 import CardPayment from '@/components/Checkout/cardPayment';
 
 const CheckoutPage = () => {
-
     const stripePromise = loadStripe(
-        `${"pk_test_51Oh79uLHaE9JSchrZN6M3Im6tS7jPvj7tV463VSvOiSUuN3ZajNrn6hqB7a0UdWjJOLhCd2DnYWkAPBibUdznV9r00c1IhiJcx"}`
+        "pk_test_51Oh79uLHaE9JSchrZN6M3Im6tS7jPvj7tV463VSvOiSUuN3ZajNrn6hqB7a0UdWjJOLhCd2DnYWkAPBibUdznV9r00c1IhiJcx"
     );
-    console.log("strip promise--------->", stripePromise)
-    const [paymentMethod, setPaymentMethod] = useState('cash');
+
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-
     const cart = useSelector((state) => state.cart.lineItems);
+    const [paymentMethod, setPaymentMethod] = useState('cash');
     const [billing, setBilling] = useState({
         first_name: '',
         last_name: '',
@@ -46,9 +43,22 @@ const CheckoutPage = () => {
         country: '',
         phone: '',
     });
-    const handleCheckout = async () => {
-        setLoading(true);
-        console.log("payment method------->", paymentMethod)
+
+    const handlePaymentChange = (e) => {
+        setPaymentMethod(e.target.value);
+    };
+
+    const handleBillingChange = (e) => {
+        const { name, value } = e.target;
+        setBilling((prevBilling) => ({ ...prevBilling, [name]: value }));
+    };
+
+    const handleShippingChange = (e) => {
+        const { name, value } = e.target;
+        setShipping((prevShipping) => ({ ...prevShipping, [name]: value }));
+    };
+
+    const placeOrder = async () => {
         try {
             const orderData = {
                 billing: billing,
@@ -61,7 +71,6 @@ const CheckoutPage = () => {
                 }))
             };
 
-            // Always send the order data for posting
             const response = await fetch('/api/orders/woocommerce', {
                 method: 'POST',
                 headers: {
@@ -69,17 +78,17 @@ const CheckoutPage = () => {
                 },
                 body: JSON.stringify({ order: orderData }),
             });
+            router.push("/checkout/orderplaced");
             if (response.ok) {
                 console.log("Order placed successfully:", response);
-
+                // Redirect or show success message
             } else {
                 console.error("Failed to place order:", response.statusText);
+                // Handle order placement failure
             }
         } catch (error) {
-            console.error("Error during checkout:", error);
+            console.error("Error during order placement:", error);
         }
-        setLoading(false);
-        // router.push("/checkout/orderplaced");
     };
 
     const handleStripeCheckout = async (result) => {
@@ -100,39 +109,40 @@ const CheckoutPage = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Payment Intent:', data.paymentIntent);
+                console.log('Payment Intent:', data);
 
+                if (data.status === 'succeeded') {
+                    await placeOrder();
+                    router.push("/checkout/orderplaced")// Place order only if payment is successful
+                } else {
+                    console.error('Payment Intent not successful:', data.paymentIntent);
+                }
             } else {
                 console.error('Failed to create Payment Intent:', response.statusText);
-
             }
         } catch (error) {
             console.error('Error creating Payment Intent:', error);
-
         }
-
         setLoading(false);
     };
 
+    const handleCheckout = () => {
+        if (paymentMethod === 'cash') {
+            placeOrder();
+        }
+        else {
+            handleStripeCheckout();
+        }
+    }
 
-
-    const handlePaymentChange = (e) => {
-        setPaymentMethod(e.target.value);
+    const calculateTotalPrice = (cart) => {
+        let totalPrice = 0;
+        cart.forEach((item) => {
+            const formattedPrice = parseFloat(item.price) * 100;
+            totalPrice += (formattedPrice * item.quantity) / 100;
+        });
+        return totalPrice.toFixed(2);
     };
-    const handleBillingChange = (e) => {
-        const { name, value } = e.target;
-        setBilling((prevBilling) => ({ ...prevBilling, [name]: value }));
-    };
-
-    const handleShippingChange = (e) => {
-        const { name, value } = e.target;
-        setShipping((prevShipping) => ({ ...prevShipping, [name]: value }));
-    };
-
-
-
-
-
 
     return (
         <div className="bg-gray-100 min-h-screen p-8">
@@ -156,7 +166,6 @@ const CheckoutPage = () => {
                     <div className='divide-y-2 divide-slate-500 border-dotted'>
 
                     </div>
-
                     <div className='pl-5'>
                         <AddressForm
                             title="Shipping Address"
@@ -195,7 +204,8 @@ const CheckoutPage = () => {
                 </div>
                 {loading && <Loader />}
                 <button
-                    onClick={(handleStripeCheckout)}
+                    onClick={handleCheckout}
+                    disabled={loading}
                     className="bg-black hover:bg-gray-950 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
                 >
                     Submit Order
@@ -203,15 +213,6 @@ const CheckoutPage = () => {
             </div>
         </div>
     );
-};
-
-const calculateTotalPrice = (cart) => {
-    let totalPrice = 0;
-    cart.forEach((item) => {
-        const formattedPrice = parseFloat(item.price) * 100;
-        totalPrice += (formattedPrice * item.quantity) / 100;
-    });
-    return totalPrice.toFixed(2);
 };
 
 export default CheckoutPage;
