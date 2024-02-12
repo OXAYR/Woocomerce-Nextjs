@@ -18,7 +18,7 @@ export default function LoginPage() {
 		});
 
 		if (response.ok) {
-			router.push("/profile");
+			router.push("/");
 		} else {
 			alert("Error login");
 		}
